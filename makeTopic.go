@@ -5,15 +5,23 @@ package main
 
 import (
 	"fmt"
-	// ""
+
+	// "github.com/topicnoteteam/getnews"
+	"topicNote/getnews"
 )
 
-func getKeyWord() (title string, url string, KeyWords string) { //getnewsで取得した記事からキーワードの抽出
-	return "title", "URL", "keywords"
+// func getKeyWord() (title string, url string, KeyWords string) { //getnewsで取得した記事からキーワードの抽出
+func getKeyWord(article getnews.NewsStruct) (title string, url string) { //getnewsで取得した記事からキーワードの抽出
+	title = article.Title
+	url = article.Url
+	// return "title", "URL", "keywords"
+	return title, url
 }
 
 func main() {
-	fmt.Println("Hi")
-	title, url, KeyWords := getKeyWord()
-	fmt.Println(title, url, KeyWords)
+	articles := getnews.Getnews()
+	for _, article := range articles {
+		title, url := getKeyWord(article)
+		fmt.Println(title, url)
+	}
 }

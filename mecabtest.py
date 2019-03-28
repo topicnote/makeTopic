@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import MeCab
 import sys
 
@@ -6,13 +9,34 @@ def main():
 		print("使い方: python3 mecabtest.py 解析したい文章")
 		return 1
 	mecab = MeCab.Tagger("-Ochasen")
-	mecab.parseToNode('') #if not needed, remove.	
 	node = mecab.parseToNode(sys.argv[1])
+	index = 0
+	gene = []
 	while node:
-		word = (node.surface).strip(node.next.surface)
-		hinshi = node.feature.split(",")[0] #1,2,..により詳しい品詞や活用が格納されている
-		print(word + " " + hinshi)
+		if node.next == None:
+			break
+		
+		#解析対象の形態素を抽出(同じ文章を二回解析すると文字化けする謎現象発生中)
+		text = (node.surface)
+		nextText = (node.next.surface)
+		text = text.replace(nextText, "")
+
+		#重み付け
+		if node.feature.split(",")[1] == "固有名詞":
+			score = 5
+		elif node.feature.split(",")[1] == "句点":
+			score = 0
+		else:
+			score = 1
+
+		#配列に追加
+		gene.append([text, node.feature.split(",")[0], node.feature.split(",")[1], score])
+		
+		#インクリメント
 		node = node.next
+		index = index + 1
+	
+	print(gene)
 	return 0
 
 if __name__ == '__main__':

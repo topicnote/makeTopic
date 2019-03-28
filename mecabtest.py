@@ -21,16 +21,20 @@ def main():
 		nextText = (node.next.surface)
 		text = text.replace(nextText, "")
 
+		#for debug
+		print(text)
+		print(node.feature)
+
 		#重み付け
 		if node.feature.split(",")[1] == "固有名詞":
 			score = 5
-		elif node.feature.split(",")[1] == "句点":
+		elif node.feature.split(",")[1] in {"句点","格助詞"}: #適宜条件追加
 			score = 0
 		else:
 			score = 1
 
 		#配列に追加
-		gene.append([text, node.feature.split(",")[0], node.feature.split(",")[1], score])
+		gene.append([text, score])
 		
 		#インクリメント
 		node = node.next

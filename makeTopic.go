@@ -13,8 +13,9 @@ import (
 	// "github.com/topicnoteteam/getnews"
 )
 
-type encorder struct {
-	id string
+type ResponseStruct struct {
+	RequestID string   `json:"request_id"`
+	Keywords  []string `json:"keywords"`
 }
 
 //Query 構造体
@@ -24,6 +25,22 @@ type Query struct {
 	Title     string `json:"title"`
 	Body      string `json:"body"`
 	MaxNum    string `json:"max_num"`
+}
+
+func execute(res *http.Response) {
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(string(body))
+	//JSON をパース
+	data := new(ResponseStruct)
+	if err := json.Unmarshal(body, data); err != nil {
+		fmt.Println("JSON Unmarshal error:", err)
+		return
+	}
+	fmt.Println(data)
 }
 
 func makeQuery(token string, title string, body string) []byte {
@@ -49,7 +66,7 @@ func getKeyword(title string, desc string) {
 	}
 	defer file.Close()
 
-	byteToken, err := ioutil.ReadAll(file) //byteTokenはstringに直すとjson形式
+	byteToken, err := ioutil.ReadAll(file)
 	token := string(byteToken)
 	queryJSON := makeQuery(token, title, desc)
 	goolabURL := "https://labs.goo.ne.jp/api/keyword"
@@ -57,7 +74,7 @@ func getKeyword(title string, desc string) {
 	req, err := http.NewRequest(
 		"POST",
 		goolabURL,
-		bytes.NewBuffer(queryJSON), //queryJSON, valuwだけでkeyがない説 → 空か？ request
+		bytes.NewBuffer(queryJSON),
 	)
 
 	if err != nil {
@@ -66,7 +83,7 @@ func getKeyword(title string, desc string) {
 		// return nil
 		return
 	}
-	req.Header.Set("Content-Type", "application/json") //, "application/x-www-form-urlencoded"
+	req.Header.Set("Content-Type", "application/json")
 	fmt.Println(req)
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -75,7 +92,9 @@ func getKeyword(title string, desc string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(resp)
+
+	execute(resp)
+	// fmt.Println(resp)
 	// doc, _ := goquery.NewDocumentFromResponse(resp) // respをパースできる状態にした
 	// keywords := doc.keywords
 	return

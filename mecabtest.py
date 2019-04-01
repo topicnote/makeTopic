@@ -12,6 +12,7 @@ def main():
 	node = mecab.parseToNode(sys.argv[1])
 	index = 0
 	gene = []
+	node = node.next
 	while node:
 		if node.next == None:
 			break

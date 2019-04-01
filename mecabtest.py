@@ -17,9 +17,7 @@ def main():
 			break
 		
 		#解析対象の形態素を抽出(同じ文章を二回解析すると文字化けする謎現象発生中)
-		text = (node.surface)
-		nextText = (node.next.surface)
-		text = text.replace(nextText, "")
+		text = (node.feature.split(",")[6])
 
 		#for debug
 		print(text)

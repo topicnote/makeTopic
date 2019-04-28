@@ -4,11 +4,11 @@
 import MeCab
 import sys
 
-def main():
+def main()
 	if len(sys.argv) < 2:
 		print("使い方: python3 mecabtest.py 解析したい文章")
 		return 1
-	mecab = MeCab.Tagger("-Ochasen")
+	mecab = MeCab.Tagger("-Ochasen")	
 	node = mecab.parseToNode(sys.argv[1])
 	index = 0
 	gene = []

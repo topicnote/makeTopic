@@ -21,6 +21,7 @@ def main():
 		text = (node.feature.split(",")[6])
 
 		#for debug
+		print("text:ee")
 		print(text)
 		print(node.feature)
 

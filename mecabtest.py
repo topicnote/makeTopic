@@ -4,7 +4,7 @@
 import MeCab
 import sys
 
-def main()
+def main():
 	if len(sys.argv) < 2:
 		print("使い方: python3 mecabtest.py 解析したい文章")
 		return 1
@@ -21,7 +21,7 @@ def main()
 		text = (node.feature.split(",")[6])
 
 		#for debug
-		print("text:ee")
+		print("text:")
 		print(text)
 		print(node.feature)
 

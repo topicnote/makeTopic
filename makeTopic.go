@@ -1,107 +1,58 @@
 //getnews → makeTopic (this file)
 //トピックを生成する
 
-package main
+package maketopic
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"os"
+	"encoding/binary"
+	"io"
+	"log"
+	"os/exec"
 	// "github.com/topicnoteteam/getnews"
 )
 
-type ResponseStruct struct {
-	RequestID string   `json:"request_id"`
-	Keywords  []string `json:"keywords"`
+// NewsStruct ニュース構造体
+type NewsStruct struct {
+	ID    uint64
+	Title string
+	URL   string
 }
 
-//Query 構造体
-type Query struct {
-	AppID     string `json:"app_id"`
-	RequestID string `json:"request_id"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
-	MaxNum    string `json:"max_num"`
+// TopicStruct トピック構造体
+type TopicStruct struct {
+	ID          uint64
+	AddedNewsID []uint64
 }
 
-func execute(res *http.Response) {
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(body))
-	//JSON をパース
-	data := new(ResponseStruct)
-	if err := json.Unmarshal(body, data); err != nil {
-		fmt.Println("JSON Unmarshal error:", err)
-		return
-	}
-	fmt.Println(data)
-}
+func makeTopic(newsList []NewsStruct) []TopicStruct {
+	topicList := []TopicStruct{}
+	w2v := exec.Command("python3", "w2v.py") //in:[NewsTitle string]  out:[TopicID int]
 
-func makeQuery(token string, title string, body string) []byte {
-	q := Query{AppID: token, RequestID: "key", Title: title, Body: body, MaxNum: "10"}
-	s, err := json.Marshal(q)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return s
-}
-
-func getKeyword(title string, desc string) {
-	// doc, _ := goquery.NewDocument(url)
-	// body := doc.Get
-	tokenPath := "../token"
-	file, err := os.Open(tokenPath)
-	if err != nil {
-		fmt.Println("token not found:")
-		fmt.Println(err)
-		// return nil
-		return
-	}
-	defer file.Close()
-
-	byteToken, err := ioutil.ReadAll(file)
-	token := string(byteToken)
-	queryJSON := makeQuery(token, title, desc)
-	goolabURL := "https://labs.goo.ne.jp/api/keyword"
-
-	req, err := http.NewRequest(
-		"POST",
-		goolabURL,
-		bytes.NewBuffer(queryJSON),
-	)
-
-	if err != nil {
-		fmt.Println("creating request failed:")
-		fmt.Println(err)
-		// return nil
-		return
-	}
-	req.Header.Set("Content-Type", "application/json")
-	fmt.Println(req)
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("client Err:")
-		fmt.Println(err)
-		return
+	// news毎にTopicIDを取得してtopicListに追加する
+	for _, news := range newsList {
+		stdin, err := w2v.StdinPipe()
+		if err != nil {
+			log.Fatal(err)
+		}
+		io.WriteString(stdin, news.Title)
+		stdin.Close()
+		out, _ := w2v.Output() //ニュースのtopicIDを取得
+		nTopicID := binary.BigEndian.Uint64(out)
+		flg := 0
+		if len(topicList) != 0 {
+			for _, topic := range topicList { //一致するTopicIDがあれば追加、なければTopicを追加
+				if topic.ID == nTopicID {
+					append(topic.AddedNewsID, nTopicID)
+					flg = 1
+					break
+				}
+			}
+		}
+		if flg == 0 {
+			newTopic := TopicStruct{nTopicID, []uint64{1, news.ID}} // 新規Topic
+			append(topicList, newTopic)
+		}
 	}
 
-	execute(resp)
-	// fmt.Println(resp)
-	// doc, _ := goquery.NewDocumentFromResponse(resp) // respをパースできる状態にした
-	// keywords := doc.keywords
-	return
-}
-
-func main() {
-	title := "アパート殺人 室内から柄が外れた包丁 強い力で刺したか"
-	desc := "26日、東京 杉並区のアパートで32歳の保育士の女性が刃物で刺されて殺害された事件で、凶器とみられる包丁は、柄の部分が外れた状態で室内から見つかっていたことが捜査関係者への取材で分かりました。警視庁はベランダから侵入した男が女性に騒がれないように強い力で刺したとみて捜査しています。"
-	getKeyword(title, desc)
+	return topicList
 }

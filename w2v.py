@@ -1,5 +1,4 @@
 import MeCab
-import sys
 import gensim
 import numpy
 
@@ -63,9 +62,6 @@ class TopicCorpus():
 			newTopicID = self.addNewTopic(newsVector)
 			return newTopicID
 
-# 新トピックを生成した場合topicModelにそれを追加（やり方は要調査）
-# すべてのニュースにトピックIDをつけたらIDを順番に標準出力
-# topicModelを保存して終了
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()
 	file = open("./newsList.txt")

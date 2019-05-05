@@ -24,7 +24,7 @@ type TopicStruct struct {
 	AddedNewsID []uint64
 }
 
-func makeTopic(newsList []NewsStruct) []TopicStruct {
+func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	topicList := []TopicStruct{}
 	w2v := exec.Command("python3", "w2v.py") //in:[NewsTitle string]  out:[TopicID int]
 

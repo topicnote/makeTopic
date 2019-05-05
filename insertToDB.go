@@ -6,21 +6,24 @@ import (
 	"~/connDB"
 )
 
-func InsertNewTopic(st *makeTopic.TopicStruct) {
+func UpdateTopic(st *makeTopic.TopicStruct) {
 	db := connDB.Conndb()
-	var query string = "SELECT * FROM user" //tmp
+	defer db.Close()
+	query := "INSERT INTO table (id, newsID) VALUES (" + st.ID + "," + st.AddednewsID + ") ON DUPLICATED KEY UPDATE newsID =" + st.AddednewsID
 	res, err := db.Exec(query)
-	fmt.Println(query)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(res)
+	fmt.Println(res) //for debug
 }
 
-func UpdateExistingTopic(st *makeTopic.TopicStruct) {
-
-}
-
-func InsertNewContent(st *makeTopic.NewsStruct) {
-
+func InsertNews(st *makeTopic.NewsStruct) {
+	db := connDB.Conndb()
+	defer db.Close()
+	query := "INSERT INTO table (id, title, url) VALUES (" + st.ID + "," + st.Title + "," + st.URL + ")"
+	res, err := db.Exec(query)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(res) //for debug
 }

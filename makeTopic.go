@@ -4,9 +4,7 @@
 package maketopic
 
 import (
-	"encoding/binary"
-	"io"
-	"log"
+	"bufio"
 	"os/exec"
 	// "github.com/topicnoteteam/getnews"
 )
@@ -24,21 +22,19 @@ type TopicStruct struct {
 	AddedNewsID []uint64
 }
 
+// MakeTopic トピック構造体のスライスを生成する
 func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	topicList := []TopicStruct{}
+	var nTopicID uint64
 	w2v := exec.Command("python3", "w2v.py") //in:[NewsTitle string]  out:[TopicID int]
-
+	topicIDsbyte, _ := w2v.Output()          //ニュースのtopicIDを取得
 	// news毎にTopicIDを取得してtopicListに追加する
+	flg := 0
+	scanner := bufio.NewScanner(topicIDsbyte)
+
 	for _, news := range newsList {
-		stdin, err := w2v.StdinPipe()
-		if err != nil {
-			log.Fatal(err)
-		}
-		io.WriteString(stdin, news.Title)
-		stdin.Close()
-		out, _ := w2v.Output() //ニュースのtopicIDを取得
-		nTopicID := binary.BigEndian.Uint64(out)
-		flg := 0
+		nTopicID = scanner.ScanInts()
+		flg = 0
 		if len(topicList) != 0 {
 			for _, topic := range topicList { //一致するTopicIDがあれば追加、なければTopicを追加
 				if topic.ID == nTopicID {

@@ -19,7 +19,7 @@ class TopicCorpus():
 		# 単語モデル、トピックモデル（トピック空間）の読み込み
 		self.wordModel = gensim.models.Word2Vec.load('ja.bin')
 		self.topicModel = gensim.models.Word2Vec.load('topic.bin')
-		# MeCabとニュースのタイトル群をセット
+		# MeCabをセット
 		self.mecab = MeCab.Tagger("-d $MECAB_DIC_PATH")
 		# topicのしきい値を設定
 		self.threshold = 0.1
@@ -68,7 +68,7 @@ class TopicCorpus():
 # topicModelを保存して終了
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()
-	file = open("./title.txt")
+	file = open("./newsList.txt")
 	newsList = file.readlines()
 	newsTitle = None
 

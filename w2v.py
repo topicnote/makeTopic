@@ -64,7 +64,7 @@ class TopicCorpus():
 
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()
-	file = open("./newsList.txt")
+	file = open("../getNews/newsList.txt")
 	newsList = file.readlines()
 	newsTitle = None
 

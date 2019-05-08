@@ -34,7 +34,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 		newTopicFlg = true
 		if strings.Contains(nTopicIDstr, "*") {
 			newTopicFlg = false
-			strings.TrimRight(nTopicIDstr)
+			strings.TrimRight(nTopicIDstr, "*")
 		}
 		nTopicID, err := strconv.ParseUint(nTopicIDstr, 10, 64)
 		if err != nil {
@@ -51,7 +51,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 		}
 		if appendTopicFlg == false {
 			newTopic := TopicStruct{nTopicID, []uint64{1, news.ID}, newTopicFlg} // 新規Topic
-			append(topicList, newTopic)
+			topicList = append(topicList, newTopic)
 		}
 	}
 

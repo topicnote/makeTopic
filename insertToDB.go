@@ -12,7 +12,7 @@ func UpdateTopic(topicList *[]structs.TopicStruct) (res int) {
 	defer db.Close()
 
 	// newsIDarray := 追加前のnewsIDの配列
-	for index := 0; index < len(topicList); index = index + 1 {
+	for index := 0; index < len(&topicList); index = index + 1 {
 		if topicList[index].isNewTopic == false {
 
 			query := "SELECT newsID FROM topic WHERE id=" + topicList[index].ID
@@ -54,7 +54,7 @@ func InsertNews(newsList *[]structs.NewsStruct) (*[]structs.NewsStruct, error) {
 
 	db := connDB.Conndb()
 	defer db.Close()
-	for index := 0; index < len(newsList); index = index + 1 {
+	for index := 0; index < len(&newsList); index = index + 1 {
 		query := "INSERT INTO news (title, url) VALUES (" + newsList[index].Title + "," + newsList[index].URL + ")"
 		res, err := db.Exec(query)
 		if err != nil {

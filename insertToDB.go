@@ -13,9 +13,9 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 
 	// newsIDarray := 追加前のnewsIDの配列
 	for index := 0; index < len(topicList); index = index + 1 {
-		if topicList[index].isNewTopic == false {
+		if topicList[index].IsNewTopic == false {
 
-			query := "SELECT newsID FROM topic WHERE id=" + topicList[index].ID
+			query := "SELECT newsID FROM topic WHERE id=" + strconf.Itoa(topicList[index].ID)
 			res, err := db.Exec(query)
 			if err != nil {
 				fmt.Println(err)
@@ -26,8 +26,8 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 			var newsIDarray = []uint64{0, 1, 2}                             //res of db.exec
 			newsIDarray = append(newsIDarray, topicList[index].AddednewsID) //追加するnewsIDをappend
 			//topicIDが存在しない→新たなtopicIDを振り、newsIDarrayを追加する topicIDが存在する→newsIDarrayを更新する
-
-			query = "UPDATE topic SET newsID =" + newsIDarray + " WHERE id = " + topicList[index].ID
+			str := fmt.Sprintf("%v", newsIDarray)
+			query = "UPDATE topic SET newsID =" + str + " WHERE id = " + strconf.Itoa(topicList[index].ID)
 			res, err = db.Exec(query)
 			if err != nil {
 				fmt.Println(err)

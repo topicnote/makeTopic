@@ -5,6 +5,7 @@ package maketopic
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os/exec"
 	"strconv"
@@ -15,15 +16,16 @@ import (
 
 // MakeTopic トピック構造体のスライスを生成する
 func MakeTopic(newsList []NewsStruct) []TopicStruct {
-	topicList := []TopicStruct{IsNewTopic: false}
-	var nTopicIDstr str
+	var topicList []TopicStruct
+	var nTopicIDstr string
 	var nTopicID uint64
 	w2v := exec.Command("python3", "w2v.py") //in:[NewsTitle string]  out:[TopicID int]
 	topicIDsbyte, _ := w2v.Output()          //ニュースのtopicIDを取得
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
 	newTopicFlg := false
-	scanner := bufio.NewScanner(topicIDsbyte)
+	r := bytes.NewReader(topicIDsbyte)
+	scanner := bufio.NewScanner(r)
 
 	for _, news := range newsList {
 		nTopicIDstr = scanner.Scan().Text()

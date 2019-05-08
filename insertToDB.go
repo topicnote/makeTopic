@@ -2,11 +2,12 @@ package maketopic
 
 import (
 	"fmt"
-	"../structs"
+
 	"../connDB"
+	"../structs"
 )
 
-func UpdateTopic(topicList *[]structs.TopicStruct) res int {
+func UpdateTopic(topicList *[]structs.TopicStruct) (res int) {
 	db := connDB.Conndb()
 	defer db.Close()
 
@@ -14,7 +15,7 @@ func UpdateTopic(topicList *[]structs.TopicStruct) res int {
 	for index := 0; index < len(topicList); index = index + 1 {
 		if topicList[index].isNewTopic == false {
 
-			query := "SELECT newsID FROM topic WHERE id=" +topicList[index].ID
+			query := "SELECT newsID FROM topic WHERE id=" + topicList[index].ID
 			res, err := db.Exec(query)
 			if err != nil {
 				fmt.Println(err)
@@ -22,35 +23,35 @@ func UpdateTopic(topicList *[]structs.TopicStruct) res int {
 			}
 			fmt.Println(res) //for debug
 
-			var newsIDarray = []int64{0,1,2} //res of db.exec
+			var newsIDarray = []uint64{0, 1, 2}                             //res of db.exec
 			newsIDarray = append(newsIDarray, topicList[index].AddednewsID) //追加するnewsIDをappend
 			//topicIDが存在しない→新たなtopicIDを振り、newsIDarrayを追加する topicIDが存在する→newsIDarrayを更新する
 
-			query := "UPDATE topic SET newsID ="+newsIDarray+" WHERE id = "+topicList[index].ID
+			query := "UPDATE topic SET newsID =" + newsIDarray + " WHERE id = " + topicList[index].ID
 			res, err := db.Exec(query)
-			if err != nil{
+			if err != nil {
 				fmt.Println(err)
 				return -1
 			}
 			fmt.Println(res) //for debug
 
-		}else{ //isNewTopic == true
+		} else { //isNewTopic == true
 
-		var newsIDarray = []int64{topicList[index].AddednewsID}
-		query := "INSERT INTO topic (id, newsID) VALUES (" + topicList.ID + "," + newsIDarray + ")"
-		res, err := db.Exec(query)
-		if err != nil {
-			fmt.Println(err)
-			return -1
+			var newsIDarray = []int64{topicList[index].AddednewsID}
+			query := "INSERT INTO topic (id, newsID) VALUES (" + topicList.ID + "," + newsIDarray + ")"
+			res, err := db.Exec(query)
+			if err != nil {
+				fmt.Println(err)
+				return -1
+			}
+			fmt.Println(res) //for debug
 		}
-		fmt.Println(res) //for debug
-	}
 	}
 	return 0
 }
 
-func InsertNews(newsList *[]structs.NewsStruct)(*[]structs.NewsStruct, error) {
-	
+func InsertNews(newsList *[]structs.NewsStruct) (*[]structs.NewsStruct, error) {
+
 	db := connDB.Conndb()
 	defer db.Close()
 	for index := 0; index < len(newsList); index = index + 1 {
@@ -60,8 +61,8 @@ func InsertNews(newsList *[]structs.NewsStruct)(*[]structs.NewsStruct, error) {
 			fmt.Println(err)
 			return nil, err
 		}
-		fmt.Println(res) //for debug
-		newsList[index].ID = index //かり		
+		fmt.Println(res)           //for debug
+		newsList[index].ID = index //かり
 	}
 	return newsList, nil
 }

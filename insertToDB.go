@@ -2,12 +2,11 @@ package maketopic
 
 import (
 	"fmt"
-	getnews "../getNews"
-	maketopic "../makeTopic"
+	"../structs"
 	"../connDB"
 )
 
-func UpdateTopic(topicList *[]maketopic.TopicStruct) res int {
+func UpdateTopic(topicList *[]structs.TopicStruct) res int {
 	db := connDB.Conndb()
 	defer db.Close()
 
@@ -50,7 +49,7 @@ func UpdateTopic(topicList *[]maketopic.TopicStruct) res int {
 	return 0
 }
 
-func InsertNews(newsList *[]getnews.NewsStruct)(*[]getnews.NewsStruct, error) {
+func InsertNews(newsList *[]structs.NewsStruct)(*[]structs.NewsStruct, error) {
 	
 	db := connDB.Conndb()
 	defer db.Close()

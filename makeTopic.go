@@ -10,18 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	getnews "../getNews"
+	"../structs"
 )
 
-// TopicStruct トピック構造体
-type TopicStruct struct {
-	ID          uint64
-	AddedNewsID []uint64
-	IsNewTopic  bool
-}
-
 // MakeTopic トピック構造体のスライスを生成する
-func MakeTopic(newsList []getnews.NewsStruct) []TopicStruct {
+func MakeTopic(newsList []structs.NewsStruct) []TopicStruct {
 	topicList := []TopicStruct{IsNewTopic: false}
 	var nTopicIDstr str
 	var nTopicID uint64

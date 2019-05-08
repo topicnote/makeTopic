@@ -2,8 +2,8 @@ package maketopic
 
 import (
 	"fmt"
-	"../getnews"
-	"maketopic"
+	getnews "../getNews"
+	maketopic "makeTopic"
 	"~/connDB"
 )
 
@@ -34,7 +34,7 @@ func UpdateTopic(topicList *[]maketopic.TopicStruct) res int {
 				return -1
 			}
 			fmt.Println(res) //for debug
-			
+
 		}else{ //isNewTopic == true
 
 		var newsIDarray = []int64{topicList[index].AddednewsID}

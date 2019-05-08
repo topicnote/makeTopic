@@ -55,7 +55,8 @@ func InsertNews(newsList []structs.NewsStruct) ([]structs.NewsStruct, error) {
 
 	db := connDB.Conndb()
 	defer db.Close()
-	for var index uint64 = 0; index < len(newsList); index = index + 1 {
+	var index uint64 = 0
+	for ; index < len(newsList); index = index + 1 {
 		query := "INSERT INTO news (title, url) VALUES (" + newsList[index].Title + "," + newsList[index].URL + ")"
 		res, err := db.Exec(query)
 		if err != nil {

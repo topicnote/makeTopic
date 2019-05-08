@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"../getnews"
+	getnews "../getNews"
 )
 
 // TopicStruct トピック構造体

@@ -28,7 +28,8 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	scanner := bufio.NewScanner(r)
 
 	for _, news := range newsList {
-		nTopicIDstr = scanner.Scan().Text()
+		scanner.Scan()
+		nTopicIDstr = scanner.Text()
 		appendTopicFlg = false
 		newTopicFlg = true
 		if strings.Contains(nTopicIDstr, "*") {
@@ -42,7 +43,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 		if len(topicList) != 0 {
 			for _, topic := range topicList { //一致するTopicIDがあれば追加、なければTopicを追加
 				if topic.ID == nTopicID {
-					append(topic.AddedNewsID, nTopicID)
+					topic.AddedNewsID = append(topic.AddedNewsID, news.ID)
 					appendTopicFlg = true
 					break
 				}

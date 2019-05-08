@@ -57,10 +57,10 @@ class TopicCorpus():
 
 		if nearestTopic[1] < self.threshold:
 			self.updateTopicVector(newsVector, nearestTopic[1])
-			return int(nearestTopic[0])
+			return nearestTopic[0] + "*"
 		else:
 			newTopicID = self.addNewTopic(newsVector)
-			return newTopicID
+			return str(newTopicID)
 
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()

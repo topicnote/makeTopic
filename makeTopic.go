@@ -6,7 +6,6 @@ package maketopic
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -36,10 +35,10 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 			newTopicFlg = false
 			strings.TrimRight(nTopicIDstr, "*")
 		}
-		nTopicID, err := strconv.ParseUint(nTopicIDstr, 10, 64)
-		if err != nil {
-			fmt.Println(err)
-		}
+		nTopicID, _ = strconv.ParseUint(nTopicIDstr, 10, 64)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
 		if len(topicList) != 0 {
 			for _, topic := range topicList { //一致するTopicIDがあれば追加、なければTopicを追加
 				if topic.ID == nTopicID {

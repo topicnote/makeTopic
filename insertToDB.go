@@ -3,8 +3,8 @@ package maketopic
 import (
 	"fmt"
 	getnews "../getNews"
-	maketopic "makeTopic"
-	"~/connDB"
+	maketopic "../makeTopic"
+	"../connDB"
 )
 
 func UpdateTopic(topicList *[]maketopic.TopicStruct) res int {

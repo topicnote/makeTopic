@@ -5,6 +5,7 @@ package maketopic
 
 import (
 	"bufio"
+	"fmt"
 	"bytes"
 	"os/exec"
 	"strconv"
@@ -18,8 +19,8 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	var topicList []TopicStruct
 	var nTopicIDstr string
 	var nTopicID uint64
-	w2v := exec.Command("python3", "w2v.py") //in:[NewsTitle string]  out:[TopicID int]
-	topicIDsbyte, _ := w2v.Output()          //ニュースのtopicIDを取得
+	topicIDsbyte, _ := exec.Command("python3", "w2v.py").Output()          //ニュースのtopicIDを取得
+	fmt.Println(string(topicIDsbyte))
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
 	newTopicFlg := false

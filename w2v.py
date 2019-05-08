@@ -16,8 +16,8 @@ def wordScore(node):
 class TopicCorpus():
 	def __init__(self):
 		# 単語モデル、トピックモデル（トピック空間）の読み込み
-		self.wordModel = gensim.models.Word2Vec.load('ja.bin')
-		self.topicModel = gensim.models.Word2Vec.load('topic.bin')
+		self.wordModel = gensim.models.Word2Vec.load('$NLP_MODEL_PATH/ja.bin')
+		self.topicModel = gensim.models.Word2Vec.load('$NLP_MODEL_PATH/topic.bin')
 		# MeCabをセット
 		self.mecab = MeCab.Tagger("-d $MECAB_DIC_PATH")
 		# topicのしきい値を設定
@@ -64,7 +64,7 @@ class TopicCorpus():
 
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()
-	file = open("../getNews/newsList.txt")
+	file = open("$NLP_MODEL_PATH/newsList.txt")
 	newsList = file.readlines()
 	newsTitle = None
 
@@ -72,4 +72,4 @@ if __name__ == "__main__":
 		topicID = topicCorpus.getTopicID(newsTitle)
 		print(topicID)
 
-	topicCorpus.topicModel.save('topic.bin')
+	topicCorpus.topicModel.save('$NLP_MODEL_PATH/topic.bin')

@@ -22,6 +22,7 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 
 			//着目TopicIDに所属するnewsIDの配列をDBから取得
 			query := "SELECT newsid FROM topic WHERE id=" + strconv.FormatUint(topicList[index].ID, 10)
+			fmt.Println(query)
 			rows, err := db.QueryContext(ctx, query)
 			if err != nil {
 				fmt.Println("DB Exec Error", err)

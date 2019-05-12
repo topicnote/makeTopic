@@ -6,6 +6,7 @@ package maketopic
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"bytes"
 	"os/exec"
 	"strconv"
@@ -19,12 +20,12 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	var topicList []TopicStruct
 	var nTopicIDstr string
 	var nTopicID uint64
-	topicIDsbyte, err:= exec.Command("python3", "w2v.py").Output()//ニュースのtopicIDを取得
+	w2vPath := os.Getenv("GOPATH") + "/src/topicNote/makeTopic/w2v.py"
+	topicIDsbyte, err:= exec.Command("python3", w2vPath).Output()//ニュースのtopicIDを取得
 	if err != nil {
 		fmt.Println("exec err")
 		return nil
 	}
-	fmt.Println(string(topicIDsbyte))
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
 	newTopicFlg := true
@@ -34,12 +35,13 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	for _, news := range newsList {
 		scanner.Scan()
 		nTopicIDstr = scanner.Text()
-		fmt.Println(nTopicIDstr)
+		fmt.Println("nTopicIDstr",nTopicIDstr)
 		appendTopicFlg = false
 		newTopicFlg = true
 		if strings.Contains(nTopicIDstr, "*") {
 			newTopicFlg = false
-			strings.TrimRight(nTopicIDstr, "*")
+			nTopicIDstr = strings.TrimRight(nTopicIDstr, "*")
+			fmt.Println(nTopicIDstr)
 		}
 		nTopicID, _ = strconv.ParseUint(nTopicIDstr, 10, 64)
 		// if err != nil {
@@ -55,10 +57,13 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 			}
 		}
 		if appendTopicFlg == false {
-			newTopic := TopicStruct{nTopicID, []uint64{1, news.ID}, newTopicFlg} // 新規Topic
+			newTopic := TopicStruct{nTopicID, []uint64{news.ID}, newTopicFlg} // 新規Topic
 			topicList = append(topicList, newTopic)
 		}
 	}
-
+	for index, topic := range topicList {
+		fmt.Println(index)
+		fmt.Println(topic.IsNewTopic)
+	}
 	return topicList
 }

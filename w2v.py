@@ -1,6 +1,7 @@
 import MeCab
 import gensim
 import numpy
+import os
 
 
 def wordScore(node):
@@ -15,13 +16,17 @@ def wordScore(node):
 
 class TopicCorpus():
 	def __init__(self):
+		modelPath = os.environ['NLP_MODEL_PATH']
+		wordModelPath = modelPath+'ja.bin'
+		topicModelPath = modelPath+'topic.bin'
 		# 単語モデル、トピックモデル（トピック空間）の読み込み
-		self.wordModel = gensim.models.Word2Vec.load('/home/ubuntu/nlp/w2vmodel/ja.bin')
-		self.topicModel = gensim.models.Word2Vec.load('/home/ubuntu/nlp/w2vmodel/topic.bin')
+		self.wordModel = gensim.models.Word2Vec.load(wordModelPath)
+		self.topicModel = gensim.models.Word2Vec.load(topicModelPath)
 		# MeCabをセット
-		self.mecab = MeCab.Tagger("-d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd")
+		mecabPath = os.environ['MECAB_DIC_PATH']
+		self.mecab = MeCab.Tagger("-d "+mecabPath)
 		# topicのしきい値を設定
-		self.threshold = 0.1
+		self.threshold = 0.01
 	
 
 	def getNewsVector(self, newsTitle):
@@ -55,21 +60,20 @@ class TopicCorpus():
 
 	def getTopicID(self, newsTitle):
 		newsVector = self.getNewsVector(newsTitle)
-		# nearestTopic:[(string)TopicID, (float?)distance]
 		nearestTopic = self.topicModel.most_similar([newsVector],[],1)
-		print(nearestTopic)
-		# if nearestTopic[1] < self.threshold:
-		# 	self.updateTopicVector(newsVector, nearestTopic[1])
-		# 	return nearestTopic[0] + "*"
-		# else:
-		# 	newTopicID = self.addNewTopic(newsVector)
-		# 	return str(newTopicID)
+		# nearestTopic:[(string)TopicID, (float?)distance]
+		if nearestTopic[1] < self.threshold:
+			self.updateTopicVector(newsVector, nearestTopic[1])
+			return nearestTopic[0] + "*"
+		else:
+			newTopicID = self.addNewTopic(newsVector)
+			return str(newTopicID)
 		newTopicID = self.addNewTopic(newsVector)
 		return str(newTopicID)
 
 if __name__ == "__main__":
 	topicCorpus = TopicCorpus()
-	file = open("/home/ubuntu/nlp/w2vmodel/newsList.txt")
+	file = open(modelPath+"/newsList.txt")
 	newsList = file.readlines()
 	newsTitle = None
 
@@ -77,4 +81,4 @@ if __name__ == "__main__":
 		topicID = topicCorpus.getTopicID(newsTitle)
 		print(topicID)
 
-	topicCorpus.topicModel.save('/home/ubuntu/nlp/w2vmodel/topic.bin')
+	topicCorpus.topicModel.save(topicModelPath)

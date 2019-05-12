@@ -23,7 +23,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	fmt.Println(string(topicIDsbyte))
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
-	newTopicFlg := false
+	newTopicFlg := true
 	r := bytes.NewReader(topicIDsbyte)
 	scanner := bufio.NewScanner(r)
 

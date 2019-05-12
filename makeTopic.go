@@ -19,7 +19,11 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	var topicList []TopicStruct
 	var nTopicIDstr string
 	var nTopicID uint64
-	topicIDsbyte, _ := exec.Command("python3", "w2v.py").Output()          //ニュースのtopicIDを取得
+	topicIDsbyte, err:= exec.Command("python3", "w2v.py").Output()//ニュースのtopicIDを取得
+	if err != nil {
+		fmt.Println("exec err")
+		return nil
+	}
 	fmt.Println(string(topicIDsbyte))
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
@@ -30,6 +34,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	for _, news := range newsList {
 		scanner.Scan()
 		nTopicIDstr = scanner.Text()
+		fmt.Println(nTopicIDstr)
 		appendTopicFlg = false
 		newTopicFlg = true
 		if strings.Contains(nTopicIDstr, "*") {

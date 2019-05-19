@@ -18,7 +18,7 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 		fmt.Println(index)
 		var ctx context.Context
 		var newsIDArrayString string
-		if topicList[index].IsNewTopic == false {
+		// if topicList[index].IsNewTopic == false {
 
 			//着目TopicIDに所属するnewsIDの配列をDBから取得
 			query := "SELECT newsid FROM topic WHERE id=" + strconv.FormatUint(topicList[index].ID, 10)
@@ -40,7 +40,8 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 			}
 
 			//変更後のnewsIDarrayをDBへ投げる
-			query = "UPDATE topic SET newsid =\"" + newsIDArrayString + "\" WHERE id = " + strconv.FormatUint(topicList[index].ID, 10)
+			// query = "UPDATE topic SET newsid =\"" + newsIDArrayString + "\" WHERE id = " + strconv.FormatUint(topicList[index].ID, 10)
+			query = "INSERT INTO topic (id, newsid) VALUES (" + strconv.FormatUint(topicList[index].ID, 10) + ", \"" + newsIDArrayString + "\") ON DUPLICATE KEY UPDATE newsid=\"" + newsIDArrayString + "\";"
 			_, err = db.Exec(query)
 			if err != nil {
 				fmt.Println("UpdateTopic(): mySQL UPDATE query 実行時エラー:", err)
@@ -48,19 +49,19 @@ func UpdateTopic(topicList []structs.TopicStruct) (res int) {
 				return -1
 			}
 
-		} else { //isNewTopic == true
+		// } else { //isNewTopic == true
 			
-			for j := 0; j < len(topicList[index].AddedNewsID); j = j + 1{
-				newsIDArrayString = newsIDArrayString + strconv.FormatUint(topicList[index].AddedNewsID[j], 10) +", "
-			}
-			query := "INSERT INTO topic (id, newsid) VALUES (" + strconv.FormatUint(topicList[index].ID, 10) + ",\"" + newsIDArrayString + "\")"
-			_, err := db.Exec(query)
-			if err != nil {
-				fmt.Println("UpdateTopic(): mySQL INSERT query 実行時エラー:", err)
-				fmt.Println(query)
-				return -1
-			}
-		}
+		// 	for j := 0; j < len(topicList[index].AddedNewsID); j = j + 1{
+		// 		newsIDArrayString = newsIDArrayString + strconv.FormatUint(topicList[index].AddedNewsID[j], 10) +", "
+		// 	}
+		// 	query := "INSERT INTO topic (id, newsid) VALUES (" + strconv.FormatUint(topicList[index].ID, 10) + ",\"" + newsIDArrayString + "\")"
+		// 	_, err := db.Exec(query)
+		// 	if err != nil {
+		// 		fmt.Println("UpdateTopic(): mySQL INSERT query 実行時エラー:", err)
+		// 		fmt.Println(query)
+		// 		return -1
+		// 	}
+		// }
 	}
 	return 0
 }

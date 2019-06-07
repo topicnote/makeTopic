@@ -4,17 +4,6 @@ import numpy
 import os
 
 
-def wordScore(node):
-	if node.feature.split(",")[1] == "固有名詞":
-		score = 2
-	elif node.feature.split(",")[1] in {"句点","格助詞"}: #適宜条件追加
-		score = 0
-	else:
-		score = 1
-	# print(node.feature.split(",")[6])
-	return score
-
-
 class TopicCorpus():
 	def __init__(self):
 		self.modelPath = os.environ['NLP_MODEL_PATH']
@@ -39,7 +28,7 @@ class TopicCorpus():
 				break
 			# 単語のVector化と重み付けをしてtopicVectorに加算
 			word = node.feature.split(",")[6]
-			score = wordScore(node)
+			score = self.wordScore(node)
 			try:
 				wordVector = self.wordModel[word]*score
 			except :
@@ -68,11 +57,20 @@ class TopicCorpus():
 		# nearestTopic:[(string)TopicID, (float?)distance]
 		if abs(nearestTopic[0][1]) > self.threshold:
 			self.updateTopicVector(newsVector, nearestTopic[0][1])
-			return nearestTopic[0][0] + "*"
+			return nearestTopic[0][0]
 		else:
 			newTopicID = self.addNewTopic(newsVector)
-			return str(newTopicID)
+			return newTopicID
 		
+	def wordScore(self, node):
+		# if node.feature.split(",")[1] == "固有名詞":
+		# 	score = 2
+		# elif node.feature.split(",")[1] in {"句点","格助詞"}: #適宜条件追加
+		# 	score = 0
+		# else:
+		# 	score = 1
+		# return score
+		return 1
 
 if __name__ == "__main__":
 	tc = TopicCorpus()

@@ -28,7 +28,6 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 	}
 	// news毎にTopicIDを取得してtopicListに追加する
 	appendTopicFlg := false
-	newTopicFlg := true
 	r := bytes.NewReader(topicIDsbyte)
 	scanner := bufio.NewScanner(r)
 
@@ -37,12 +36,10 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 		nTopicIDstr = scanner.Text()
 		fmt.Println("nTopicIDstr",nTopicIDstr)
 		appendTopicFlg = false
-		newTopicFlg = true
-		if strings.Contains(nTopicIDstr, "*") {
-			newTopicFlg = false
-			nTopicIDstr = strings.TrimRight(nTopicIDstr, "*")
-			fmt.Println(nTopicIDstr)
-		}
+		// if strings.Contains(nTopicIDstr, "*") {
+		// 	nTopicIDstr = strings.TrimRight(nTopicIDstr, "*")
+		// 	fmt.Println(nTopicIDstr)
+		// }
 		nTopicID, _ = strconv.ParseUint(nTopicIDstr, 10, 64)
 		// if err != nil {
 		// 	fmt.Println(err)
@@ -57,7 +54,7 @@ func MakeTopic(newsList []NewsStruct) []TopicStruct {
 			}
 		}
 		if appendTopicFlg == false {
-			newTopic := TopicStruct{nTopicID, []uint64{news.ID}, newTopicFlg} // 新規Topic
+			newTopic := TopicStruct{nTopicID, []uint64{news.ID}} // 新規Topic
 			topicList = append(topicList, newTopic)
 		}
 	}

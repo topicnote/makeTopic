@@ -2,7 +2,7 @@ package maketopic
 
 import (
 	"fmt"
-	"strconv"
+	"strcov"
 	"database/sql"
 
 	"../connDB"

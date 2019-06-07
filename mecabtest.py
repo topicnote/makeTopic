@@ -1,47 +1,22 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
+import w2v
+import numpy as np
 
-import MeCab
-import sys
+def cos_sim(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
 
-def main():
-	if len(sys.argv) < 2:
-		print("使い方: python3 mecabtest.py 解析したい文章")
-		return 1
-	mecab = MeCab.Tagger("-Ochasen")	
-	node = mecab.parseToNode(sys.argv[1])
-	index = 0
-	gene = []
-	node = node.next
-	while node:
-		if node.next == None:
-			break
-		
-		#解析対象の形態素を抽出
-		text = (node.feature.split(",")[6])
 
-		#for debug
-		print("text:")
-		print(text)
-		print(node.feature)
+if __name__ == "__main__":
+	tc = w2v.TopicCorpus()
+	file = open(tc.modelPath+"/newsList.txt")
+	newsList = file.readlines()
+	newsTitle = None
+	vec = None
 
-		#重み付け
-		if node.feature.split(",")[1] == "固有名詞":
-			score = 5
-		elif node.feature.split(",")[1] in {"句点","格助詞"}: #適宜条件追加
-			score = 0
-		else:
-			score = 1
-
-		#配列に追加
-		gene.append([text, score])
-		
-		#インクリメント
-		node = node.next
-		index = index + 1
-	
-	print(gene)
-	return 0
-
-if __name__ == '__main__':
-	main()
+	for i, newsTitle in enumerate(newsList):
+		print(newsTitle)
+		if i==0:
+			vec = tc.getNewsVector(newsTitle)
+			continue
+		oldvec = vec
+		vec = tc.getNewsVector(newsTitle)
+		print(cos_sim(oldvec,vec))
